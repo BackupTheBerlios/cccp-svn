@@ -20,7 +20,6 @@ AC_CONFIG_FILES([Makefile
                  include/Makefile
                  src/Makefile
                  src/libcccp/Makefile
-                 src/tests/Makefile
                  tests/Makefile
                  tests/libcccp/Makefile])
 AC_CONFIG_HEADER([include/config.h])
