@@ -1,7 +1,7 @@
 ## Process Makefile.am with automake to create Makefile.in. -*- Makefile -*-
 ## Written by Andreas Ferber <sunshine@bielefeld.ccc.de>
 
-INCLUDES = $(CPPUNIT_CFLAGS)
+INCLUDES = -I$(top_srcdir)/include $(CPPUNIT_CFLAGS)
 LDADD = ../../src/libcccp/libcccp.la $(CPPUNIT_LIBS)
 
 if HAVE_CPPUNIT

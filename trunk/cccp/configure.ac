@@ -53,6 +53,13 @@ if test "$ac_cv_cxx_namespaces" != yes; then
 ***]])
 fi
 
+AC_CXX_HAVE_STD
+if test "$ac_cv_cxx_have_std" != yes; then
+  AC_MSG_ERROR([[***
+*** No ISO C++ standard library available.
+***]])
+fi
+
 AC_CXX_HAVE_STL
 if test "$ac_cv_cxx_have_stl" != yes; then
   AC_MSG_ERROR([[***
@@ -112,7 +119,7 @@ if test x"$boost_libdir" != x; then
   LDFLAGS="$LDFLAGS -L$boost_libdir"
 fi
 
-AC_CHECK_HEADERS([boost/signal.hpp boost/bind.hpp],
+AC_CHECK_HEADERS([boost/version.hpp boost/signal.hpp boost/bind.hpp],
                  [], [[CCC_BOOST_NOT_FOUND]])
 AC_CACHE_CHECK([for boost::signal in -lboost_signals],
   [ccc_cv_have_libboost_signals], [
@@ -125,6 +132,21 @@ AC_CACHE_CHECK([for boost::signal in -lboost_signals],
     LIBS="$OLD_LIBS"])
 if test "$ccc_cv_have_libboost_signals" != yes; then
   CCC_BOOST_NOT_FOUND
+fi
+
+AC_CACHE_CHECK([for Boost version >= 1.31.0],
+  [cccp_cv_boost_version_ge_1_31_0], [
+    AC_PREPROC_IFELSE([AC_LANG_SOURCE([[#include <boost/version.hpp>
+#if BOOST_VERSION < 103100
+#error too old
+#endif
+]])], [cccp_cv_boost_version_ge_1_31_0=yes],
+      [cccp_cv_boost_version_ge_1_31_0=no])
+])
+if test "$cccp_cv_boost_version_ge_1_31_0" != yes; then
+  AC_MSG_ERROR([***
+*** Your version of the Boost libraries is outdated.
+***])
 fi
 
 CPPFLAGS="$OLD_CPPFLAGS"
