@@ -73,7 +73,12 @@ if test "$ac_cv_cxx_exceptions" != yes; then
 ***]])
 fi
 
-# Checks for libraries.
+# Checks for header files.
+AC_CHECK_HEADERS([sys/select.h])
+
+# Checks for library functions.
+
+# Checks for additional libraries.
 found_asprintf_hdr=yes
 AC_CHECK_HEADERS([autosprintf.h], [], [found_asprintf_hdr=no])
 AC_CACHE_CHECK([for gnu::autosprintf in -lasprintf],
@@ -188,5 +193,8 @@ AM_CONDITIONAL(HAVE_CPPUNIT, test x"$CPPUNIT_LIBS" != x)
 # Checks for typedefs, structures, and compiler characteristics.
 
 # Checks for library functions.
+
+CCCP_INIT_DOXYGEN([The CCCP API Reference], [Version $VERSION])
+AC_CONFIG_FILES([doc/Doxyfile])
 
 AC_OUTPUT

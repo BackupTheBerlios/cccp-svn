@@ -20,4 +20,17 @@ MAINTAINERCLEANFILES = \
 maintainer-clean-local:
 	-find -name Makefile.in | xargs rm -f
 
+apidoc: apidoc-am-$(CCCP_HAS_DOXYGEN)
+
+apidoc-am-no:
+	@echo "You need to install doxygen to generate the API documentation" >&2
+
+apidoc-am-yes: doc/Doxyfile
+	$(DOXYGEN) doc/Doxyfile
+
+distclean-local:
+	-rm -rf doc/api/
+
+.PHONY: apidoc apidoc-am-no apidoc-am-yes
+
 # vim:ft=make
