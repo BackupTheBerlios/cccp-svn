@@ -21,6 +21,7 @@
 
 #include <cccp/ionotifier.h>
 #include <cccp/mainloop.h>
+#include <cccp/debug.h>
 
 namespace CCCP {
 
@@ -137,7 +138,29 @@ MainLoop::removeNotifier(IONotifier* ion)
     MainLoopPrivate::IONFdMap::iterator it;
     it = d->notif.find(ion->fd());
     if (it != d->notif.end()) {
+        std::list<IONotifier*>& list = it->second;
+        std::list<IONotifier*>::iterator pos;
+        pos = std::find(list.begin(), list.end(), ion);
+        if (pos != list.end())
+            list.erase(pos);
+        else
+            BUG(("tried to remove unknown notifier %#8x", ion));
+        if (list.empty()) {
+            d->notif.erase(it);
+            switch (ion->type()) {
+            case IONotifier::Read:
+                FD_CLR(ion->fd(), &d->read_set);
+                break;
+
+            case IONotifier::Write:
+                FD_CLR(ion->fd(), &d->write_set);
+                break;
+            }
+            FD_CLR(ion->fd(), &d->except_set);
+        }
     }
+    else
+        BUG(("tried to remove unknown notifier %#8x", ion));
 }
 
 MainLoop* theMainLoop;
