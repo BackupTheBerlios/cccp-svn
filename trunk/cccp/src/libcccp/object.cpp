@@ -18,16 +18,13 @@
 #define NDEBUG 1
 #endif
 
+#include <cstdlib>
+#include <iostream>
 #include <vector>
 #include <algorithm>
 #include <boost/bind.hpp>
 #include <cccp/object.h>
-
-#ifdef DEBUG_OBJECT
-#include <iostream>
-#endif
-
-#include <cassert>
+#include <cccp/debug.h>
 
 namespace CCCP {
 
@@ -99,10 +96,10 @@ Object::reparent(Object* parent)
 void
 Object::addChild(Object* child)
 {
-    assert(child != 0);
-    assert(std::find(m_children.begin(),
+    BUG_ON(child == 0);
+    BUG_ON(std::find(m_children.begin(),
                      m_children.end(),
-                     child) == m_children.end());
+                     child) != m_children.end());
 
     m_children.push_back(child);
     childAdded(this, child);
@@ -111,15 +108,26 @@ Object::addChild(Object* child)
 void
 Object::removeChild(Object* child)
 {
-    assert(child != 0);
+    BUG_ON(child == 0);
     if (!m_destroying) {
         std::vector<Object*>::iterator pos(std::find(m_children.begin(),
                                                      m_children.end(),
                                                      child));
-        assert(pos != m_children.end());
+        BUG_ON(pos == m_children.end());
         m_children.erase(pos);
     }
     childRemoved(this, child);
+}
+
+void
+Object::do_BUG(const char* file, int line, const char* msg)
+{
+    std::cerr << file << ":" << line << ": BUG(this=\""
+        << (m_name?m_name:"(unnamed)") << "\")";
+    if (msg != 0)
+        std::cerr << ": " << msg;
+    std::cerr << std::endl;
+    std::abort();
 }
 
 }; // namespace CCCP

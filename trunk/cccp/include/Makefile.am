@@ -4,7 +4,8 @@
 nobase_include_HEADERS = \
 	cccp/object.h		\
 	cccp/mainloop.h		\
-	cccp/ionotifier.h
+	cccp/ionotifier.h	\
+	cccp/debug.h
 
 uninstall-hook:
 	-rmdir $(DESTDIR)$(includedir)/cccp

@@ -83,6 +83,9 @@ private:
     Object* m_parent;
     std::vector<Object*> m_children;
     bool m_destroying;
+
+protected:
+    void do_BUG(const char* file, int line, const char* msg = 0);
 }; // class Object
 
 }; // namespace CCCP

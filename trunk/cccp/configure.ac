@@ -74,6 +74,32 @@ if test "$ac_cv_cxx_exceptions" != yes; then
 fi
 
 # Checks for libraries.
+found_asprintf_hdr=yes
+AC_CHECK_HEADERS([autosprintf.h], [], [found_asprintf_hdr=no])
+AC_CACHE_CHECK([for gnu::autosprintf in -lasprintf],
+  cccp_cv_have_libasprintf, [
+    OLD_LIBS="$LIBS"
+    LIBS="-lasprintf $LIBS"
+    AC_LINK_IFELSE(AC_LANG_PROGRAM([[#include <autosprintf.h>]],
+                                   [[gnu::autosprintf a("")]]),
+      [cccp_cv_have_libasprintf=yes],
+      [cccp_cv_have_libasprintf=no])
+    LIBS="$OLD_LIBS"])
+ASPRINTF_LIBS=
+if test x"$found_asprintf_hdr" != xno; then
+  if test x"$cccp_cv_have_libasprintf" != xno; then
+    ASPRINTF_LIBS="-lasprintf"
+    AC_DEFINE([HAVE_AUTOSPRINTF], 1,
+              [Define to 1 if you have GNU autosprintf installed.])
+  else
+    AC_MSG_WARN([***
+*** Found GNU autosprintf headers, but not the library.
+*** Check your installation.
+***])
+  fi
+fi
+AC_SUBST([ASPRINTF_LIBS])
+
 AC_DEFUN([CCC_BOOST_NOT_FOUND], [
   AC_MSG_ERROR([[***
 *** Could not find Boost libraries.  Please install them first and rerun
@@ -121,15 +147,15 @@ fi
 AC_CHECK_HEADERS([boost/version.hpp boost/signal.hpp boost/bind.hpp],
                  [], [[CCC_BOOST_NOT_FOUND]])
 AC_CACHE_CHECK([for boost::signal in -lboost_signals],
-  [ccc_cv_have_libboost_signals], [
+  [cccp_cv_have_libboost_signals], [
     OLD_LIBS="$LIBS"
     LIBS="-lboost_signals $LIBS"
     AC_LINK_IFELSE(AC_LANG_PROGRAM([[#include <boost/signal.hpp>]],
                                    [[boost::signal<void ()> s;]]),
-      [ccc_cv_have_libboost_signals=yes],
-      [ccc_cv_have_libboost_signals=no])
+      [cccp_cv_have_libboost_signals=yes],
+      [cccp_cv_have_libboost_signals=no])
     LIBS="$OLD_LIBS"])
-if test "$ccc_cv_have_libboost_signals" != yes; then
+if test x"$cccp_cv_have_libboost_signals" = xno; then
   CCC_BOOST_NOT_FOUND
 fi
 
