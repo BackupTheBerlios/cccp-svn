@@ -65,6 +65,7 @@ class ObjectTest : public CppUnit::TestFixture {
     CPPUNIT_TEST(childDestruction);
     CPPUNIT_TEST(grandchildDestruction);
     CPPUNIT_TEST(childAddedSignal);
+    CPPUNIT_TEST(childRemovedSignal);
     CPPUNIT_TEST_SUITE_END();
 
 private:
@@ -127,6 +128,23 @@ public:
         CPPUNIT_ASSERT(sigArg1 == root);
         CPPUNIT_ASSERT(sigArg2 == obj);
     }
+
+    void childRemovedSignal()
+    {
+        int called = 0;
+        CCCP::Object* sigArg1 = 0;
+        CCCP::Object* sigArg2 = 0;
+
+        root->childRemoved.connect(TwoArgSignalHelper(called, sigArg1, sigArg2));
+
+        CCCP::Object* obj = new CCCP::Object(root, "child object");
+        delete obj;
+
+        CPPUNIT_ASSERT(called == 1);
+        CPPUNIT_ASSERT(sigArg1 == root);
+        CPPUNIT_ASSERT(sigArg2 == obj);
+    }
+
 }; // class ObjectTest
 
 CPPUNIT_TEST_SUITE_REGISTRATION(ObjectTest);
