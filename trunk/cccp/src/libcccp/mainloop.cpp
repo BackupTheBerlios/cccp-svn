@@ -1,4 +1,4 @@
-/* $Id: mainloop.cpp $
+/* $Id$
  *
  * description to follow
  *

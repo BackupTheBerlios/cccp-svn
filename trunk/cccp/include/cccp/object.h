@@ -1,4 +1,4 @@
-/* $Id: object.h $
+/* $Id$
  *
  * description to follow
  *

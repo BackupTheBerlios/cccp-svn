@@ -1,4 +1,4 @@
-/* $Id: mainloop.h $
+/* $Id$
  *
  * description to follow
  *

@@ -1,4 +1,4 @@
-/* $Id: test.cpp $
+/* $Id$
  *
  * description to follow
  *

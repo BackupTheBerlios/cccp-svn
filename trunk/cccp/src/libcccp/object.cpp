@@ -1,4 +1,4 @@
-/* $Id: object.cpp $
+/* $Id$
  *
  * description to follow
  *
